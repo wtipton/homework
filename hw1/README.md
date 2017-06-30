@@ -1,4 +1,9 @@
-# CS294-112 HW 1: Imitation Learning, hacked up to work with RoboSchool
+# CS294-112 HW 1: Imitation Learning
+
+This is the code for the first problem set from Berkeley's cs294, modified to
+work with the free RoboSchool engine, rather than Mujoco. The original pset
+came with expert models. Instead of these, we'll use the pre-trained models
+that come in the agent_zoo/ subdirectory of the RoboSchool distribution.
 
 Dependencies: TensorFlow, RoboSchool, OpenAI Gym
 
