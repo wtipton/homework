@@ -3,8 +3,8 @@
 """
 Code to load an expert policy and generate roll-out data for behavioral cloning.
 Example usage:
-    python run_expert.py experts/Humanoid-v1.pkl Humanoid-v1 --render \
-            --num_rollouts 20
+    python run_expert.py roboschool/agent_zoo/RoboschoolHalfCheetah_v0_2017may.py \
+        RoboschoolHalfCheetah-v0 --render --num_rollouts 20
 
 Author of this script and included expert policies: Jonathan Ho (hoj@openai.com)
 """
@@ -14,7 +14,6 @@ import tensorflow as tf
 import numpy as np
 import tf_util
 import gym
-import load_policy
 
 def main():
     import argparse
@@ -28,7 +27,9 @@ def main():
     args = parser.parse_args()
 
     print('loading and building expert policy')
-    policy_fn = load_policy.load_policy(args.expert_policy_file)
+    with open(args.expert_policy_file, 'r') as f:
+      globals()['__name__']='foo'
+      exec(f.read(), globals())
     print('loaded and built')
 
     with tf.Session():
@@ -36,6 +37,7 @@ def main():
 
         import gym
         env = gym.make(args.envname)
+        policy = SmallReactivePolicy(env.observation_space, env.action_space)
         max_steps = args.max_timesteps or env.spec.timestep_limit
 
         returns = []
@@ -48,7 +50,7 @@ def main():
             totalr = 0.
             steps = 0
             while not done:
-                action = policy_fn(obs[None,:])
+                action = policy.act(obs)
                 observations.append(obs)
                 actions.append(action)
                 obs, r, done, _ = env.step(action)
